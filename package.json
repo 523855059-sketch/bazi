@@ -1,0 +1,10 @@
+{
+  "name": "bazi-chart",
+  "version": "1.0.0",
+  "private": true,
+  "description": "四柱排盘与解读（纯前端 PWA）",
+  "scripts": {
+    "build:jieqi": "node tools/build-jieqi.cjs",
+    "verify": "node tools/verify-bazi.cjs"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "八字 · 四柱排盘",
+  "short_name": "八字",
+  "description": "公历生日排四柱、藏干、十神、五行、大运流年，并按传统子平命理生成解读。",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#12121a",
+  "theme_color": "#12121a",
+  "lang": "zh-CN",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

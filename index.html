@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>八字 · 四柱排盘与解读</title>
+  <meta name="description" content="公历生日排四柱、藏干、十神、五行、大运流年，并按传统子平命理生成解读。">
+  <meta name="theme-color" content="#12121a">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <header>
+    <h1>八字</h1>
+    <p>四柱 · 十神 · 大运流年</p>
+  </header>
+
+  <!-- ========== 输入 ========== -->
+  <section id="setup">
+    <div class="field">
+      <label>生日用哪种历法</label>
+      <div class="options" id="calendar-type">
+        <button class="opt active" data-cal="solar">公历<em>身份证上那个</em></button>
+        <button class="opt" data-cal="lunar">农历<em>长辈常记的</em></button>
+      </div>
+    </div>
+
+    <div class="field" id="solar-date-field">
+      <label for="birth-date">公历生日</label>
+      <input id="birth-date" type="date" min="1900-01-01" max="2100-12-31" required>
+    </div>
+
+    <div class="field hidden" id="lunar-date-field">
+      <label>农历生日</label>
+      <div class="lunar-picker">
+        <input id="lunar-year" type="number" min="1900" max="2100" aria-label="农历年" placeholder="年">
+        <select id="lunar-month" aria-label="农历月"></select>
+        <select id="lunar-day" aria-label="农历日"></select>
+      </div>
+      <small id="lunar-note">选好后会自动换算成公历再排盘。</small>
+    </div>
+
+    <div class="field">
+      <label for="birth-time">出生时间</label>
+      <input id="birth-time" type="time" value="12:00" required>
+    </div>
+
+    <div class="field">
+      <label>出生时间准不准</label>
+      <div class="options three" id="time-accuracy">
+        <button class="opt active" data-accuracy="exact">精确<em>出生证、病历</em></button>
+        <button class="opt" data-accuracy="approx">大概<em>差一小时以内</em></button>
+        <button class="opt" data-accuracy="unknown">不确定<em>只记得时段</em></button>
+      </div>
+      <small id="accuracy-hint">时辰决定时柱。选「大概」或「不确定」时，程序会标注时柱不可靠。</small>
+    </div>
+
+    <div class="field">
+      <label>性别<small>（只影响大运顺逆）</small></label>
+      <div class="options" id="gender">
+        <button class="opt active" data-gender="male">男</button>
+        <button class="opt" data-gender="female">女</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>时辰口径</label>
+      <div class="options" id="solar-mode">
+        <button class="opt active" data-solar="off">北京时间<em>不校正</em></button>
+        <button class="opt" data-solar="on">真太阳时<em>按出生地经度校正</em></button>
+      </div>
+    </div>
+
+    <div class="field" id="place-field">
+      <label for="city">出生地</label>
+      <select id="city"><option value="">── 选择城市（找不到就手动填经度）──</option></select>
+      <input id="longitude" type="number" step="0.01" min="73" max="135" value="116.41" placeholder="东经度数，如 116.41">
+      <small id="place-hint">中国跨五个时区，但统一用北京时间。同样写「中午 12 点出生」，喀什（东经 76°）实际是巳时，抚远（135°）是午时。选真太阳时才用得上这个。</small>
+    </div>
+
+    <button id="run">排 盘</button>
+  </section>
+
+  <!-- ========== 结果 ========== -->
+  <section id="result" class="hidden"></section>
+
+  <footer>
+    本应用按传统子平命理排盘与推演，结果属传统术数范畴，不构成医疗、投资、法律、婚育等任何建议，也不承诺准确性。
+    排盘在本机完成；只有在你填入 API Key 并点击「生成解读」时，出生信息才会发送给你选定的模型服务。
+  </footer>
+</main>
+
+<noscript><p style="text-align:center">这个页面需要 JavaScript 才能排盘。</p></noscript>
+
+<script src="lib/astro.js"></script>
+<script src="lib/constants.js"></script>
+<script src="lib/jieqi.js"></script>
+<script src="data/jieqi.js"></script>
+<script src="data/cities.js"></script>
+<script src="lib/lunar.js"></script>
+<script src="lib/shensha.js"></script>
+<script src="lib/analysis.js"></script>
+<script src="lib/bazi.js"></script>
+<script src="lib/retro.js"></script>
+<script src="lib/deepseek.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

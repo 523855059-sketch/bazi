@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
+  <rect width="192" height="192" rx="42" fill="#12121a"/>
+  <circle cx="96" cy="96" r="72" fill="none" stroke="#7d6a45" stroke-width="2"/>
+  <circle cx="96" cy="96" r="64" fill="none" stroke="#2e2e3b" stroke-width="1"/>
+  <text x="96" y="130" font-family="Noto Serif SC, Songti SC, SimSun, serif" font-size="86"
+        fill="#c9a86a" text-anchor="middle">八</text>
+</svg>
