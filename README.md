@@ -100,6 +100,7 @@ tools/verify-bazi.cjs 自检
 docs/校对记录.md      节气对照与验证记录
 docs/解读样例_口语版.md  解读的目标风格样例
 docs/竞品与定位.md    市场调研与差异化依据
+docs/发布与分享指南.md  部署到 GitHub Pages，以及发给朋友的文案
 ```
 
 ## 已知边界
