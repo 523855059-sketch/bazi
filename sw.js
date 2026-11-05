@@ -1,6 +1,6 @@
 // 离线缓存：仅在通过 http(s) 访问时生效（file:// 打开不会注册 Service Worker）。
 // 策略：network-first —— 在线时永远取最新文件，离线才回退到缓存。
-const CACHE = 'bazi-v3';
+const CACHE = 'bazi-v4';
 const ASSETS = [
   './',
   './index.html',
@@ -15,6 +15,7 @@ const ASSETS = [
   './lib/shensha.js',
   './lib/analysis.js',
   './lib/bazi.js',
+  './lib/config.js',
   './lib/deepseek.js',
   './data/jieqi.js',
   './data/cities.js',

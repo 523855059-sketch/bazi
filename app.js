@@ -20,6 +20,13 @@
   var $ = function (id) { return document.getElementById(id); };
   var state = { gender: 'male', solar: 'off', accuracy: 'exact', chart: null, abort: null, reqId: 0 };
 
+  // 站点若配了解读代理（lib/config.js 的 proxyUrl），访客不填 Key 也能生成
+  function proxyConf() {
+    var c = BZ.config;
+    if (!c || !c.proxyUrl) return null;
+    return { url: c.proxyUrl, code: c.proxyCode || '' };
+  }
+
   /* ---------------- 表单 ---------------- */
 
   function selectOption(containerId, attr, value) {
@@ -438,12 +445,15 @@
 
     html += retroHTML();
 
+    var proxy = proxyConf();
     html += '<div class="card" id="ai-card">'
-      + '<h2>AI 解读 <span class="sub">需要 DeepSeek API Key</span></h2>'
-      + '<p class="ai-note">排盘在本机完成。点「生成解读」时，上面的命盘信息会发送给 DeepSeek，由模型写出解读；API Key 只存在这台设备的浏览器里。'
+      + '<h2>AI 解读 <span class="sub">' + (proxy ? '本站已开通' : '需要 DeepSeek API Key') + '</span></h2>'
+      + '<p class="ai-note">' + (proxy
+        ? '排盘在本机完成。点「生成解读」时，命盘信息经本站转发给 DeepSeek，不用填 Key。想用自己的额度直连，也可以在下面填自己的 Key。'
+        : '排盘在本机完成。点「生成解读」时，上面的命盘信息会发送给 DeepSeek，由模型写出解读；API Key 只存在这台设备的浏览器里。')
       + '解读属传统术数推演，不构成医疗、投资、法律、婚育等建议。</p>'
       + '<div class="key-row">'
-      + '<input id="api-key" type="password" placeholder="sk-…" autocomplete="off">'
+      + '<input id="api-key" type="password" placeholder="' + (proxy ? '（可选）自己的 Key，留空用本站服务' : 'sk-…') + '" autocomplete="off">'
       + '<button id="save-key" class="ghost">保存</button>'
       + '</div>'
       + '<div class="field"><label for="focus">想问的事<small>（可留空）</small></label>'
@@ -558,7 +568,8 @@
   function runRetro() {
     if (!state.chart) return;
     var key = ($('api-key') ? $('api-key').value.trim() : '') || readKey();
-    if (!key) { setRetroStatus('回测需要模型判断，请先在下面的「AI 解读」里填好 API Key', true); return; }
+    var proxy = proxyConf();
+    if (!key && !proxy) { setRetroStatus('回测需要模型判断，请先在下面的「AI 解读」里填好 API Key', true); return; }
 
     var events = collectEvents();
     if (events.length < 2) { setRetroStatus('至少填两件，一件说明不了问题', true); return; }
@@ -587,6 +598,7 @@
 
     BZ.deepseek.streamChat({
       apiKey: key,
+      proxy: key ? null : proxy,
       messages: BZ.deepseek.buildRetroMessages(BZ.bazi.toPromptText(state.chart), lines),
       signal: state.abort.signal,
       onDelta: function (piece) {
@@ -609,7 +621,8 @@
   function generateReading() {
     if (!state.chart) return;
     var key = $('api-key').value.trim();
-    if (!key) { setStatus('请先填入 DeepSeek API Key（可在 platform.deepseek.com 申请）', true); return; }
+    var proxy = proxyConf();
+    if (!key && !proxy) { setStatus('请先填入 DeepSeek API Key（可在 platform.deepseek.com 申请）', true); return; }
 
     var reading = $('reading');
     var btn = $('gen');
@@ -629,6 +642,7 @@
 
     BZ.deepseek.streamChat({
       apiKey: key,
+      proxy: key ? null : proxy,
       messages: messages,
       signal: state.abort.signal,
     onDelta: function (piece) {
