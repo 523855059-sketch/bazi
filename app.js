@@ -474,8 +474,14 @@
     $('save-key').addEventListener('click', function () {
       var v = $('api-key').value.trim();
       if (!v) { setStatus('请先填入 Key', true); return; }
-      writeKey(v);
-      setStatus('已保存到本机浏览器');
+      if (writeKey(v)) setStatus('已保存到本机浏览器');
+      else setStatus('这台浏览器不让保存（可能开了无痕模式），每次打开都要重填', true);
+    });
+
+    // 填完点别处就记住，不用特意去点「保存」
+    $('api-key').addEventListener('blur', function () {
+      var v = $('api-key').value.trim();
+      if (v && v !== readKey()) writeKey(v);
     });
 
     $('gen').addEventListener('click', generateReading);
@@ -489,7 +495,7 @@
     try { return localStorage.getItem(KEY_STORE) || ''; } catch (e) { return ''; }
   }
   function writeKey(v) {
-    try { localStorage.setItem(KEY_STORE, v); } catch (e) { /* 隐私模式下写不进去，忽略 */ }
+    try { localStorage.setItem(KEY_STORE, v); return true; } catch (e) { return false; }   // 隐私模式下写不进去，交给调用方提示
   }
 
   function setStatus(text, isErr) {
@@ -570,6 +576,7 @@
     var key = ($('api-key') ? $('api-key').value.trim() : '') || readKey();
     var proxy = proxyConf();
     if (!key && !proxy) { setRetroStatus('回测需要模型判断，请先在下面的「AI 解读」里填好 API Key', true); return; }
+    if (key && key !== readKey()) writeKey(key);   // 用过一次就记住，不用再点保存
 
     var events = collectEvents();
     if (events.length < 2) { setRetroStatus('至少填两件，一件说明不了问题', true); return; }
@@ -623,6 +630,7 @@
     var key = $('api-key').value.trim();
     var proxy = proxyConf();
     if (!key && !proxy) { setStatus('请先填入 DeepSeek API Key（可在 platform.deepseek.com 申请）', true); return; }
+    if (key && key !== readKey()) writeKey(key);   // 用过一次就记住，不用再点保存
 
     var reading = $('reading');
     var btn = $('gen');
